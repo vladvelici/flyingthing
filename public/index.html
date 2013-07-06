@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>cool stuff</title>
+	<script src="http://localhost:9000/socket.io/socket.io.js"></script>
+	<style type="text/css">
+		* {
+			margin: 0px;
+			padding: 0px;
+		}
+		#object {
+			width: 100px;
+			height: 100px;
+			position: fixed;
+		}
+		#screens {
+			height: 130px;
+			line-height: 130px;
+			text-align: center;
+		}
+		#screens div {
+			display: inline-block;
+			background: rgba(200,150,150,0.5);
+			margin: 2px;			
+		}
+	</style>
+</head>
+<body>
+	<div id='object'></div>
+	<div id='screens'></div>
+	<script type="text/javascript" src='app.js'></script>
+</body>
+</html>
