@@ -14,6 +14,36 @@ var getOrder = function(id) {
 	}
 }
 
+var thing = {
+	absX: 0,
+	absY: 0,
+	x: 0,
+	y: 0,
+	screen: 0
+}
+
+
+var bigscreen = {
+	width: 0,
+	height: 0,
+	update: function() {
+		this.width = 0;
+		for (var i in clients) {
+			var cl = clients[i];
+			this.width += cl.width;
+			this.height = Math.max(this.height, cl.height);
+		}
+	},
+	screenXY: function(posX, posY) {
+		var w = 0;
+		for (var i=0;i<clients.length;i++) {
+			w+=clients[i].width;
+			if (posX<=w)
+				return {x: posX+w-clients[i].width, y:posY, screen: i};
+		}
+	}
+};
+
 io.sockets.on('connection', function (socket) {
 
 	var order = clientOrder.length;
@@ -29,11 +59,20 @@ io.sockets.on('connection', function (socket) {
 		clients[socket.id].height = data.height;
 
 		if (sendAfter)
-			socket.emit("clients", clients);
+			socket.emit("clients", {clients: clients, thing: thing});
+
+		bigscreen.update();
 
 		socket.broadcast.emit("screenData", {id: socket.id, width: data.width, height:data.height});
 
-	})
+	});
+
+	socket.on("click", function(data) {
+		// console.log("clikeddd!");
+		thing = data;
+		// console.log(thing);
+		socket.broadcast.emit("movething", thing);
+	});
 
 	socket.on("disconnect", function() { 
 		delete clients[socket.id];
@@ -43,6 +82,9 @@ io.sockets.on('connection', function (socket) {
 		for (var sid in clients) {
 			clients[sid].order = getOrder(sid);
 		}
+
+		// bigscreen update
+		bigscreen.update();
 
 		socket.broadcast.emit("clientDisconnected", socket.id);
 	});

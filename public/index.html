@@ -3,22 +3,32 @@
 <head>
 	<title>cool stuff</title>
 	<script src="http://localhost:9000/socket.io/socket.io.js"></script>
+	<script type="text/javascript" src='raf.js'></script>
+	<script type="text/javascript" src='tween.js'></script>
 	<style type="text/css">
 		* {
 			margin: 0px;
 			padding: 0px;
 		}
+
 		#object {
 			width: 100px;
 			height: 100px;
 			position: fixed;
+			top:100px;
+			left:100px;
+			background: #f99;
+			border-radius: 50px;
+			z-index: 10;
 		}
+
 		#screens {
 			height: 130px;
 			text-align: center;
 			overflow: hidden;
 			border-bottom: 1px solid #999;
 		}
+
 		#screens div {
 			display: inline-block;
 			background: rgba(200,150,150,0.5);
