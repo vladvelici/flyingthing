@@ -50,6 +50,7 @@ var displays = {
 			var res = this.domRatio(disp.width, disp.height);
 			disp.dom.style.width = res.width + "px";
 			disp.dom.style.height = res.height + "px";
+			console.log("height: ", disp.dom.style.height, "maxdomheight:", this.maxDomHeight, "maxh:", this.maxHeight);
 		}
 	},
 
@@ -108,4 +109,4 @@ window.addEventListener("resize", function() {
 		if (displays.initialScreenData)
 			displays.update(session, window.innerWidth, window.innerHeight);
 		socket.emit("myResolution", {width: window.innerWidth, height: window.innerHeight});
-})
+});

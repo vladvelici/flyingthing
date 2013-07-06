@@ -14,7 +14,6 @@ var getOrder = function(id) {
 	}
 }
 
-
 io.sockets.on('connection', function (socket) {
 
 	var order = clientOrder.length;
