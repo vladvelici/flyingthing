@@ -8,7 +8,7 @@ var io = require('socket.io').listen(socketioPort);
 var clients = {};
 var clientOrder = [];
 var getOrder = function(id) {
-	for (var i=0;i<clientOrder.length; clientOrder++) {
+	for (var i=0;i<clientOrder.length; i++) {
 		if (clientOrder[i] === id)
 			return i;
 	}
