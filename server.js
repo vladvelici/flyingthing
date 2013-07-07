@@ -48,7 +48,7 @@ var bigscreen = {
 io.sockets.on('connection', function (socket) {
 
 	var order = clientOrder.length;
-	console.log("someone connected, new order:", order);
+
 	clients[socket.id] = {width:undefined, height:undefined, order: order};
 	clientOrder[clientOrder.length] = socket.id;
 
@@ -70,9 +70,7 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on("click", function(data) {
-		// console.log("clikeddd!");
 		thing = data;
-		// console.log(thing);
 		socket.broadcast.emit("movething", thing);
 	});
 
@@ -94,18 +92,18 @@ io.sockets.on('connection', function (socket) {
 
 });
 
-	// fake clicks -- yay
-var lastPosition = false;
+/*
+// fake clicks -- yay
+// uni of southampton scrolling demo, fake clicks
 
+var lastPosition = false;
 setInterval(function() {
-	// console.log("hat!", clientOrder, clients);
 	if (clientOrder.length === 0) return false;
 
 	var middle = (bigscreen.height / 2) - 77;
 	lastPosition = !lastPosition;
 	var newx = lastPosition === false ? bigscreen.width : 0;
 	var scrx = bigscreen.screenXY(newx, middle);
-	// console.log("something bad happens", scrx);
 	var dest = {
 		absX: newx,
 		absY: middle,
@@ -113,10 +111,9 @@ setInterval(function() {
 		y: middle,
 		screen: scrx.screen
 	};
-	// console.log("moveto", dest);
 	io.sockets.emit("movething", dest);
 }, __settings__speed);
-
+*/
 // Static file server:
 var connect = require('connect'),
     http = require('http');
@@ -127,4 +124,4 @@ connect()
 
 // Nice greeting so you know it works:
 console.log("Server started at http://localhost:" + staticFilesPort);
-console.log("Socket.io is on port " + socketioPort);
+console.log("Socket.io (v" + io.version() + ") is on port " + socketioPort);

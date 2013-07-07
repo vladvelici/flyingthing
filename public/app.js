@@ -1,7 +1,7 @@
 var socket, fly, session;
 var displays = [];
 
-var __settings__speed = 15000;
+var __settings__speed = 500;
 
 var displays = {
 	arr: [],
@@ -80,7 +80,6 @@ var displays = {
 		if (index === undefined) return;
 		var el = this.arr.splice(index,1)[0];
 
-		// this.totalWidth-=el.width;
 		if (this.totalHeight >= el.height) {
 			this.totalHeight = 0;
 			for (var i=0;i<this.arr.length;i++) {
@@ -88,18 +87,17 @@ var displays = {
 			}
 		}
 
-		// console.log("the element", el);
 		this.dom.removeChild(el.dom);
 		this.updateDom();
 	},
 
 	screenXY: function(x,y,screenId) {
 		var offsetx=0;
-		// console.log("array", this.arr);
+
 		for (var i=0;i<screenId;i++) {
 			offsetx+=this.arr[i].width;
 		}
-		console.log("offsetX is ", offsetx);
+
 		return {x: x - offsetx, y: y};
 	}
 }
@@ -157,7 +155,7 @@ var init = function() {
 
 	socket.on("clients", function(data) {
 		displays.initialScreenData = true;
-		// console.log(data);
+
 		for (var id in data.clients) {
 			displays.add(data.clients[id].width, data.clients[id].height, id, data.clients[id].order);
 		}
@@ -182,39 +180,34 @@ var init = function() {
 	socket.on("movething", function(data) {
 		thething.pos = data;
 		thething.update();
-		console.log("thing moved");
 	});
 
 
     animate();
 }
-	 function animate() {
-
-        requestAnimationFrame( animate ); // js/RequestAnimationFrame.js needs to be included too.
-        TWEEN.update();
-
-    }
+function animate() {
+	requestAnimationFrame( animate );
+	TWEEN.update();
+}
 
 window.addEventListener("load", function() {
-	socket = io.connect("http://192.168.88.6:9000");
+	socket = io.connect("http://localhost:9000");
 
 	socket.on("connect", init);
 });
 
 window.addEventListener("resize", function() {
-		console.log("resized");
 		if (displays.initialScreenData)
 			displays.update(session, window.innerWidth, window.innerHeight);
 		socket.emit("myResolution", {width: window.innerWidth, height: window.innerHeight});
 });
 
-/*
+
 window.addEventListener("click", function(data) {
 	thething.clickAt(data.clientX, data.clientY, displays.getIndexById(session));
-	console.log(thething.pos);
 
 	socket.emit("click", thething.pos);
 	thething.update();
 });
-*/
+
 requestAnimationFrame(function() { TWEEN.update(); });
