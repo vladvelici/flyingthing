@@ -124,4 +124,4 @@ connect()
 
 // Nice greeting so you know it works:
 console.log("Server started at http://localhost:" + staticFilesPort);
-console.log("Socket.io (v" + io.version() + ") is on port " + socketioPort);
+console.log("Socket.io is on port " + socketioPort);
