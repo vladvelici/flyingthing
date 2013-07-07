@@ -1,9 +1,11 @@
 var socket, fly, session;
 var displays = [];
 
+var __settings__speed = 15000;
+
 var displays = {
 	arr: [],
-	maxDomHeight: 130-4,
+	maxDomHeight: 54-4,
 	maxHeight: 0,
 	dom: document.getElementById('screens'),
 	initialScreenData: false,
@@ -112,8 +114,8 @@ var thething = {
 	},
 	dom: document.getElementById("object"),
 	clickAt: function(x,y,screen) {
-		this.pos.x = x-50;
-		this.pos.y = y-50;
+		this.pos.x = x-354;
+		this.pos.y = y-77;
 		this.pos.screen = screen;
 		this.pos.absY = this.pos.y;
 		this.pos.absX = this.pos.x;
@@ -127,16 +129,23 @@ var thething = {
 	t: null,
 	update: function() {
 		var p = this.getOnScreenXY();
-		// console.log(p);
+
 		var tmpx = parseInt(this.dom.style.left);
 		var tmpy = parseInt(this.dom.style.top);
 		var ddom = this.dom;
 		t = new TWEEN.Tween({x: tmpx, y:tmpy})
-			.to({x: p.x, y: p.y}, 500).onUpdate(function() {
+			.to({x: p.x, y: p.y}, __settings__speed).onUpdate(function() {
 				ddom.style.left = this.x + "px";
-				ddom.style.top = this.y + "px";
-				
+				ddom.style.top = this.y + "px";				
 			}).start();
+	},
+	quickupdate: function() {
+		var p = this.getOnScreenXY();
+
+		var ddom = this.dom;
+	
+		ddom.style.left = p.x + "px";
+		ddom.style.top = p.y + "px";
 	}
 };
 
@@ -154,7 +163,7 @@ var init = function() {
 		}
 		// thing
 		thething.pos = data.thing;
-		thething.update();
+		thething.quickupdate();
 	});
 
 	socket.on("screenData", function(data) {
@@ -187,7 +196,7 @@ var init = function() {
     }
 
 window.addEventListener("load", function() {
-	socket = io.connect("http://localhost:9000");
+	socket = io.connect("http://192.168.88.6:9000");
 
 	socket.on("connect", init);
 });
@@ -199,6 +208,7 @@ window.addEventListener("resize", function() {
 		socket.emit("myResolution", {width: window.innerWidth, height: window.innerHeight});
 });
 
+/*
 window.addEventListener("click", function(data) {
 	thething.clickAt(data.clientX, data.clientY, displays.getIndexById(session));
 	console.log(thething.pos);
@@ -206,5 +216,5 @@ window.addEventListener("click", function(data) {
 	socket.emit("click", thething.pos);
 	thething.update();
 });
-
+*/
 requestAnimationFrame(function() { TWEEN.update(); });

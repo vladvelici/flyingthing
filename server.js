@@ -1,5 +1,5 @@
 var fs = require('fs');
-
+var __settings__speed = 15000;
 var staticFilesPort = process.env.PORT || 8000;
 var socketioPort = 9000;
 
@@ -36,10 +36,11 @@ var bigscreen = {
 	},
 	screenXY: function(posX, posY) {
 		var w = 0;
-		for (var i=0;i<clients.length;i++) {
-			w+=clients[i].width;
+		for (var i=0;i<clientOrder.length;i++) {
+			var cl = clients[clientOrder[i]];
+			w+=cl.width;
 			if (posX<=w)
-				return {x: posX+w-clients[i].width, y:posY, screen: i};
+				return {x: posX+w-cl.width, y:posY, screen: i};
 		}
 	}
 };
@@ -47,8 +48,9 @@ var bigscreen = {
 io.sockets.on('connection', function (socket) {
 
 	var order = clientOrder.length;
-
+	console.log("someone connected, new order:", order);
 	clients[socket.id] = {width:undefined, height:undefined, order: order};
+	clientOrder[clientOrder.length] = socket.id;
 
 	socket.on("myResolution", function(data) {
 		var sendAfter = false;
@@ -75,8 +77,8 @@ io.sockets.on('connection', function (socket) {
 	});
 
 	socket.on("disconnect", function() { 
+		clientOrder.splice(clients[socket.id].order,1);
 		delete clients[socket.id];
-		clientOrder.splice(socket.id,1);
 
 		// update orders
 		for (var sid in clients) {
@@ -88,7 +90,32 @@ io.sockets.on('connection', function (socket) {
 
 		socket.broadcast.emit("clientDisconnected", socket.id);
 	});
+
+
 });
+
+	// fake clicks -- yay
+var lastPosition = false;
+
+setInterval(function() {
+	// console.log("hat!", clientOrder, clients);
+	if (clientOrder.length === 0) return false;
+
+	var middle = (bigscreen.height / 2) - 77;
+	lastPosition = !lastPosition;
+	var newx = lastPosition === false ? bigscreen.width : 0;
+	var scrx = bigscreen.screenXY(newx, middle);
+	// console.log("something bad happens", scrx);
+	var dest = {
+		absX: newx,
+		absY: middle,
+		x: scrx.x,
+		y: middle,
+		screen: scrx.screen
+	};
+	// console.log("moveto", dest);
+	io.sockets.emit("movething", dest);
+}, __settings__speed);
 
 // Static file server:
 var connect = require('connect'),
