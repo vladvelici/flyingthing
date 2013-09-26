@@ -92,17 +92,18 @@ io.sockets.on('connection', function (socket) {
 
 });
 
-/*
+
 // fake clicks -- yay
 // uni of southampton scrolling demo, fake clicks
 
 var lastPosition = false;
 setInterval(function() {
+    console.log("fake click happened");
 	if (clientOrder.length === 0) return false;
 
 	var middle = (bigscreen.height / 2) - 77;
 	lastPosition = !lastPosition;
-	var newx = lastPosition === false ? bigscreen.width : 0;
+	var newx = lastPosition === false ? bigscreen.width-831 : 10;
 	var scrx = bigscreen.screenXY(newx, middle);
 	var dest = {
 		absX: newx,
@@ -113,7 +114,7 @@ setInterval(function() {
 	};
 	io.sockets.emit("movething", dest);
 }, __settings__speed);
-*/
+
 // Static file server:
 var connect = require('connect'),
     http = require('http');
