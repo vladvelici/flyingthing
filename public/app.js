@@ -149,7 +149,7 @@ var thething = {
 
 var init = function() {
 
-	session = socket.socket.sessionid;
+	session = socket.id;
 
 	socket.emit("myResolution", {width: window.innerWidth, height: window.innerHeight});
 
@@ -191,9 +191,9 @@ function animate() {
 }
 
 window.addEventListener("load", function() {
-	socket = io.connect("http://localhost:9000");
+	window.socket = io.connect("http://localhost:9000");
 
-	socket.on("connect", init);
+	window.socket.on("connect", init);
 });
 
 window.addEventListener("resize", function() {

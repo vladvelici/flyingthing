@@ -116,13 +116,20 @@ setInterval(function() {
 }, __settings__speed);
 
 // Static file server:
-var connect = require('connect'),
-    http = require('http');
+var http = require('http'),
+    finalhandler = require('finalhandler'),
+    serveStatic = require('serve-static');
 
-connect()
-	.use(connect.static('public'))
-	.listen(staticFilesPort);
+var serve = serveStatic('./public');
+
+var server = http.createServer(function(req, res) {
+  var done = finalhandler(req, res);
+  serve(req, res, done);
+});
+
 
 // Nice greeting so you know it works:
 console.log("Server started at http://localhost:" + staticFilesPort);
 console.log("Socket.io is on port " + socketioPort);
+
+server.listen(staticFilesPort);
